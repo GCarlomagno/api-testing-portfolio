@@ -1,0 +1,16 @@
+{
+	"id": "10f002b4-5e6b-49f1-a8b3-f6538b71e987",
+	"name": "JSONPlaceholder",
+	"values": [
+		{
+			"key": "baseUrl",
+			"value": "https://jsonplaceholder.typicode.com",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"color": null,
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2026-03-15T12:32:40.743Z",
+	"_postman_exported_using": "Postman/12.1.4"
+}
