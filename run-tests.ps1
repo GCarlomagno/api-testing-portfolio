@@ -19,3 +19,11 @@ if ($LASTEXITCODE -eq 0) {
 }
 
 exit $LASTEXITCODE
+
+# ── QA Live API Tests (Data-Driven) ───────────────────────────────────────────
+Write-Host "Running QA Live API Tests (Data-Driven)..." -ForegroundColor Cyan
+newman run postman/qa-live-api-tests.postman_collection.json `
+  --environment postman/qa-live-api-env.postman_environment.json `
+  --iteration-data data/test-data.json `
+  --reporters "cli,htmlextra" `
+  --reporter-htmlextra-export reports/qa-live-api-newman-report.html

@@ -28,3 +28,11 @@ else
 fi
 
 exit $EXIT_CODE
+
+# ── QA Live API Tests (Data-Driven) ───────────────────────────────────────────
+echo "Running QA Live API Tests (Data-Driven)..."
+newman run postman/qa-live-api-tests.postman_collection.json \
+  --environment postman/qa-live-api-env.postman_environment.json \
+  --iteration-data data/test-data.json \
+  --reporters "cli,htmlextra" \
+  --reporter-htmlextra-export reports/qa-live-api-newman-report.html

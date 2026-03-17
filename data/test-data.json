@@ -7,11 +7,18 @@
   {
     "name": "Bob Jones",
     "username": "bobjones",
-    "email": "bob.jones@example.com"
+    "email": "bob.jones@example.com",
+    "phone": "555-1234",
+    "website": "bobjones.dev"
   },
   {
     "name": "Carlo Rossi",
     "username": "carlorossi",
-    "email": "carlo.rossi@example.com"
+    "email": "carlo.rossi@example.com",
+    "phone": "555-5678",
+    "website": "carlorossi.it",
+    "street": "Via Roma 1",
+    "city": "Rome",
+    "zipcode": "00100"
   }
 ]

@@ -1,33 +1,40 @@
 # 🔌 API Testing Portfolio Project
-**Test Cycle Version:** 1.3
-**Test Execution Period:** 2026-03-08 – 2026-03-15
+**Test Cycle Version:** 1.4
+**Test Execution Period:** 2026-03-08 – 2026-03-17
 **Tester:** GCarlomagno
 
 ---
 
 ## 📌 Project Overview
-This repository demonstrates a structured API testing cycle executed against public REST APIs (JSONPlaceholder and DummyJSON).
+This repository demonstrates a structured API testing cycle executed against public REST APIs (JSONPlaceholder and DummyJSON) and a live custom REST API deployed on a personal VPS.
 
-The objective of this test cycle is to validate API endpoint behavior across positive and negative scenarios, including status code validation, response structure verification, request body validation, and dynamic request chaining.
+The objective of this test cycle is to validate API endpoint behavior across positive and negative scenarios, including status code validation, response structure verification, request body validation, dynamic request chaining, and data-driven testing using Newman iteration data files.
 
 The project includes full QA documentation artifacts:
 - Structured API Test Cases
-- Postman Collection with automated test scripts
+- Postman Collections with automated test scripts
 - Execution Evidence (screenshots)
 - Newman CLI execution and HTML reports
 - Reusable run scripts for local and CI execution
+- Data-driven test execution using `--iteration-data`
 
 All artifacts follow standardized documentation conventions to simulate real project-level QA execution.
 
 ---
 
-## 🛠 API Under Test
+## 🛠 APIs Under Test
 
 ### JSONPlaceholder
 A free public REST API used for testing and prototyping. Used to validate GET and POST request scenarios, response validation, and negative/error handling.
 
 ### DummyJSON
 A free public REST API supporting persistent-style POST and DELETE responses. Used to validate dynamic request chaining across multiple endpoints.
+
+### QA Live API
+A live custom REST API built and deployed as part of this portfolio at `https://api.testacode.com`. Supports full CRUD operations with real SQLite persistence. Used to validate data-driven testing, request chaining, and negative scenarios against a real live backend.
+
+- **Swagger UI:** https://api.testacode.com/docs
+- **Source code:** https://github.com/GCarlomagno/qa-live-api
 
 ---
 
@@ -36,12 +43,16 @@ A free public REST API supporting persistent-style POST and DELETE responses. Us
 ### Included
 - GET request validation (list and single resource)
 - POST request validation with request body
+- PUT request validation (full replacement)
+- PATCH request validation (partial update)
 - DELETE request validation
-- Status code verification (200, 201, 404)
+- Status code verification (200, 201, 404, 409, 422)
 - Response structure and field validation
 - Negative testing (invalid resource, 404 handling)
+- Validation error testing (422 Unprocessable Entity)
 - Response data matching (sent data vs returned data)
 - Dynamic request chaining using Postman collection variables
+- Data-driven testing using Newman `--iteration-data`
 - Automated Collection Runner execution
 - Newman CLI execution and HTML report generation
 - Reusable shell and PowerShell run scripts
@@ -50,7 +61,6 @@ A free public REST API supporting persistent-style POST and DELETE responses. Us
 - Authentication and authorization testing
 - Performance and load testing
 - Security testing
-- PUT request validation (planned for future cycles)
 
 ---
 
@@ -59,6 +69,7 @@ Testing was performed using a structured manual and automated API testing method
 - Endpoint validation using Postman
 - Automated test scripts using Postman post-response scripting (pm.test)
 - Dynamic data passing between requests using `pm.collectionVariables`
+- Data-driven testing using Newman `--iteration-data` with `data/test-data.json`
 - Positive scenario validation
 - Negative and edge case testing
 - Response body structure and field verification
@@ -72,7 +83,7 @@ Testing was performed using a structured manual and automated API testing method
 ## 🚀 Running Tests via Newman CLI
 
 ### Prerequisites
-- [Node.js](https://nodejs.org) v24+
+- [Node.js](https://nodejs.org) v18+
 - Newman: `npm install -g newman`
 - Newman HTML Reporter: `npm install -g newman-reporter-htmlextra`
 
@@ -88,19 +99,24 @@ Testing was performed using a structured manual and automated API testing method
 ./run-tests.sh
 ```
 
-Both scripts run the full collection with CLI and HTML reporters, add a 300ms delay between requests, stop on first failure, and generate a timestamped HTML report in the `newman/` folder.
-
-### Option 2 — Run manually (terminal output only)
+### Option 2 — Run JSONPlaceholder collection manually
 ```bash
-newman run postman/api-testing-collection.json -e postman/api-testing-environment2.json
+newman run postman/api-testing-collection.json \
+  -e postman/api-testing-environment2.json \
+  --reporters "cli,htmlextra" \
+  --reporter-htmlextra-export reports/jsonplaceholder-report.html
 ```
 
-### Option 3 — Run manually (with HTML report)
+### Option 3 — Run QA Live API collection (data-driven)
 ```bash
-newman run postman/api-testing-collection.json -e postman/api-testing-environment2.json -r "cli,htmlextra" --reporter-htmlextra-export newman/report.html
+newman run postman/qa-live-api-tests.postman_collection.json \
+  --environment postman/qa-live-api-env.postman_environment.json \
+  --iteration-data data/test-data.json \
+  --reporters "cli,htmlextra" \
+  --reporter-htmlextra-export reports/qa-live-api-newman-report.html
 ```
 
-Report will be generated in the `newman/` folder.
+This runs the full collection 3 times — once per row in `data/test-data.json`.
 
 ---
 
@@ -109,15 +125,16 @@ Report will be generated in the `newman/` folder.
 ### Postman 12 Collection Runner — Silent Failure Bug
 In Postman 12.1.1, unsaved requests fail silently in the Collection Runner with misleading errors such as "empty URL", while working correctly with manual Send.
 
-**Workaround:** Always press `CTRL+S` on each request after any change before running the Collection Runner.
+**Workaround:** Always press `CTRL+S` on each request after any change before running the Collection Runner or exporting the collection.
 
 ---
 
 ## 📂 Repository Structure
+- `/data/` — Iteration data files for Newman data-driven runs
 - `/docs/` — API test case documentation
 - `/evidence/` — Screenshots of test execution results
-- `/postman/` — Exported Postman collection and environment files
-- `/newman/` — Newman HTML execution reports
+- `/postman/` — Exported Postman collections and environment files
+- `/reports/` — Newman HTML execution reports
 - `run-tests.ps1` — Reusable Newman run script for Windows
 - `run-tests.sh` — Reusable Newman run script for Linux/CI
 
@@ -125,21 +142,27 @@ In Postman 12.1.1, unsaved requests fail silently in the Collection Runner with 
 
 ## 🎯 Skills Demonstrated
 - REST API testing with Postman
-- GET, POST and DELETE request validation
-- Status code verification
+- Full CRUD request validation (GET, POST, PUT, PATCH, DELETE)
+- Status code verification (200, 201, 404, 409, 422)
 - Response body structure validation
 - Negative testing and error handling
+- Validation error testing (422)
+- Conflict error testing (409)
 - Automated assertions using Postman scripting
 - Dynamic request chaining using collection variables
+- Data-driven testing using Newman `--iteration-data`
 - Collection Runner execution and validation
 - Newman CLI execution and HTML report generation
 - Reusable run scripts for local and CI execution
 - Test case documentation for API scenarios
 - Execution evidence collection
+- Live API deployment and testing against real persistence
 
 ---
 
 ## 🧪 Test Execution Results
+
+### JSONPlaceholder Collection
 | Metric | Result |
 |--------|--------|
 | Total Test Cases Designed | 7 |
@@ -148,9 +171,22 @@ In Postman 12.1.1, unsaved requests fail silently in the Collection Runner with 
 | Failed | 0 |
 | Defects Identified | 0 |
 
+### QA Live API Collection (Data-Driven)
+| Metric | Result |
+|--------|--------|
+| Total Test Cases Designed | 9 |
+| Total Test Cases Executed | 9 |
+| Iterations | 3 |
+| Total Assertions | 87 |
+| Passed | 87 |
+| Failed | 0 |
+| Defects Identified | 0 |
+
 ---
 
 ## 📑 Test Cases
+
+### JSONPlaceholder Collection
 | Test Case ID | Endpoint | Type | Status |
 |-------------|----------|------|--------|
 | TC-API-001 | GET /users | Positive | ✅ Passed |
@@ -160,5 +196,18 @@ In Postman 12.1.1, unsaved requests fail silently in the Collection Runner with 
 | TC-API-005 | POST /users/add (Chained) | Positive | ✅ Passed |
 | TC-API-006 | GET /users/{{userId}} (Chained) | Positive | ✅ Passed |
 | TC-API-007 | DELETE /users/{{userId}} (Chained) | Positive | ✅ Passed |
+
+### QA Live API Collection
+| Test Case ID | Endpoint | Type | Status |
+|-------------|----------|------|--------|
+| TC-API-008 | GET /health | Positive | ✅ Passed |
+| TC-API-009 | GET /users | Positive | ✅ Passed |
+| TC-API-010 | POST /users (Data-Driven) | Positive | ✅ Passed |
+| TC-API-011 | GET /users/{{userId}} (Chained) | Positive | ✅ Passed |
+| TC-API-012 | PATCH /users/{{userId}} (Chained) | Positive | ✅ Passed |
+| TC-API-013 | PUT /users/{{userId}} (Chained) | Positive | ✅ Passed |
+| TC-API-014 | DELETE /users/{{userId}} (Chained) | Positive | ✅ Passed |
+| TC-API-015 | GET /users/99999 | Negative | ✅ Passed |
+| TC-API-016 | POST /users (invalid email) | Negative | ✅ Passed |
 
 Full test case documentation is available in [docs/API-Test-Cases.md](docs/API-Test-Cases.md).

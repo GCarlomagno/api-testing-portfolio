@@ -1,0 +1,461 @@
+{
+  "info": {
+    "_postman_id": "fcd5548d-a756-4ced-b224-8685fa2d32bf",
+    "name": "qa-live-api-tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "21829103"
+  },
+  "item": [
+    {
+      "name": "TC-API-008 - GET Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"TC-API-008 - Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-008 - Response has status ok\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.status).to.eql(\"ok\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-API-009 - GET List All Users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"TC-API-009 - Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-009 - Response is an array\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json).to.be.an(\"array\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-009 - Each user has required fields\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    json.forEach(user => {\r",
+              "        pm.expect(user).to.have.property(\"id\");\r",
+              "        pm.expect(user).to.have.property(\"name\");\r",
+              "        pm.expect(user).to.have.property(\"username\");\r",
+              "        pm.expect(user).to.have.property(\"email\");\r",
+              "    });\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-API-010 — POST Create User (Data-Driven)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"TC-API-010 - Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-010 - Response has a name\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.name).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-010 - Response has a valid email\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.email).to.include(\"@\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-010 - Response has an id\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.id).to.be.a(\"number\");\r",
+              "    pm.collectionVariables.set(\"userId\", json.id);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Test User4\",\r\n  \"username\": \"testuser99934\",\r\n  \"email\": \"testuser99934@test.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-API-011 — GET User by ID (Chained)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"TC-API-011 - Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-011 - Response has correct id\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-011 - Response has required fields\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json).to.have.property(\"id\");\r",
+              "    pm.expect(json).to.have.property(\"name\");\r",
+              "    pm.expect(json).to.have.property(\"username\");\r",
+              "    pm.expect(json).to.have.property(\"email\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-API-012 - PATCH Partial Update (Chained)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"TC-API-012 - Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-012 - Phone was updated\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.phone).to.eql(\"555-9999\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-012 - Website was updated\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.website).to.eql(\"updated.example.com\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-012 - Id remains unchanged\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"phone\": \"555-9999\",\r\n  \"website\": \"updated.example.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-API-013 — PUT Replace User (Chained)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"TC-API-013 - Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-013 - Name was replaced\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.name).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-013 - Email was replaced\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.email).to.include(\"@\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-013 - Id remains unchanged\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Updated {{name}}\",\r\n  \"username\": \"updated_{{username}}\",\r\n  \"email\": \"updated_{{email}}\",\r\n  \"phone\": \"555-0000\",\r\n  \"website\": \"updateduser.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-API-014 — DELETE User (Chained)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"TC-API-014 - Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-014 - Response confirms deletion\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.message).to.include(\"deleted successfully\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-014 - Deleted user id is correct\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.message).to.include(String(pm.collectionVariables.get(\"userId\")));\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "",
+            "value": "",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-API-015 - GET Non-Existent User (404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"TC-API-015 - Status code is 404\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-015 - Response has detail message\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.detail).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-015 - Error message references user id\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.detail).to.include(\"99999\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/99999",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "99999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-API-016 - POST Validation Error (422)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"TC-API-016 - Status code is 422\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-016 - Response has detail array\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.detail).to.be.an(\"array\").and.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TC-API-016 - Error references email field\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    const emailError = json.detail.find(e => e.loc.includes(\"email\"));\r",
+              "    pm.expect(emailError).to.not.be.undefined;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Bad User\",\r\n  \"username\": \"baduser\",\r\n  \"email\": \"not-a-valid-email\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "userId",
+      "value": ""
+    }
+  ]
+}
