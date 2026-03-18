@@ -1,6 +1,7 @@
 # 🔌 API Testing Portfolio Project
-**Test Cycle Version:** 1.4
-**Test Execution Period:** 2026-03-08 – 2026-03-17
+![API Tests](https://github.com/GCarlomagno/api-testing-portfolio/actions/workflows/api-tests.yml/badge.svg)
+**Test Cycle Version:** 1.5
+**Test Execution Period:** 2026-03-08 – 2026-03-18
 **Tester:** GCarlomagno
 
 ---
@@ -120,6 +121,26 @@ This runs the full collection 3 times — once per row in `data/test-data.json`.
 
 ---
 
+## ⚙️ CI Integration
+
+This project uses GitHub Actions to automatically run the Newman test suite on every push to `main`.
+
+**Workflow file:** `.github/workflows/api-tests.yml`
+**Runner:** `ubuntu-latest`
+**Trigger:** Push to `main`, pull requests, manual dispatch
+**Collection:** QA Live API (data-driven, 3 iterations, 87 assertions)
+**Artifact:** HTML report uploaded on every run (pass or fail)
+
+Pushes to `evidence/`, `docs/`, and `*.md` files are ignored to avoid unnecessary runs.
+
+### Viewing results
+1. Go to the [Actions tab](https://github.com/GCarlomagno/api-testing-portfolio/actions)
+2. Click any workflow run
+3. Click the `api-tests` job to see step-by-step logs
+4. Scroll to the bottom of the run summary to download the HTML report artifact
+
+---
+
 ## ⚠️ Known Issues
 
 ### Postman 12 Collection Runner — Silent Failure Bug
@@ -157,6 +178,7 @@ In Postman 12.1.1, unsaved requests fail silently in the Collection Runner with 
 - Test case documentation for API scenarios
 - Execution evidence collection
 - Live API deployment and testing against real persistence
+- CI integration using GitHub Actions (automated Newman execution on push)
 
 ---
 
