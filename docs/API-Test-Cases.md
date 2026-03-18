@@ -350,3 +350,25 @@ Verify that the API returns a 422 error when an invalid email is submitted.
 - Data-driven testing uses `--iteration-data` in Newman — each row in `test-data.json` becomes one full collection iteration.
 - Postman 12 requires **CTRL+S** on each request after any change before running the Collection Runner or exporting. Unsaved requests cause silent failures.
 - The API resets to 10 seed users daily at 03:00 UTC via a cron job.
+
+---
+## 8. CI Pipeline Test Cases
+> These test cases validate the GitHub Actions workflow itself — not the API under test.
+> They verify that the pipeline triggers correctly, installs dependencies, executes both
+> Newman collections, uploads the HTML report as an artifact, and correctly fails on
+> assertion errors.
+>
+> Workflow file: `.github/workflows/api-tests.yml`
+> Runner: `ubuntu-latest`
+
+| TC ID | Title | Precondition | Steps | Expected Result | Status |
+|---|---|---|---|---|---|
+| TC-CI-001 | Workflow triggers on push to main | Workflow file exists in `.github/workflows/` | Push any commit to `main` | Workflow run appears in GitHub Actions tab within 30 seconds | ✅ Pass |
+| TC-CI-002 | Node.js installs successfully | Runner is `ubuntu-latest` | Workflow executes `setup-node` step | Step completes with no error; node version logged | ✅ Pass |
+| TC-CI-003 | Newman installs successfully | Node.js is available on runner | Workflow executes `npm install -g newman newman-reporter-htmlextra` | Step completes with exit code 0 | ✅ Pass |
+| TC-CI-004 | JSONPlaceholder collection passes | Collection and environment JSON files are committed | Newman runs JSONPlaceholder collection | All assertions pass; exit code 0; pipeline stays green | ⏳ Pending |
+| TC-CI-005 | DummyJSON chained collection passes | Collection and environment JSON files are committed | Newman runs DummyJSON collection | All assertions pass; exit code 0; pipeline stays green | ⏳ Pending |
+| TC-CI-006 | QA Live API collection passes (data-driven) | Collection, environment, and `data/test-data.json` are committed | Newman runs QA Live API collection with `--iteration-data` | All 87 assertions pass; exit code 0; pipeline stays green | ✅ Pass |
+| TC-CI-007 | HTML report uploaded as artifact | Newman runs with htmlextra reporter | Workflow completes | HTML report visible under Artifacts in the GitHub Actions run summary | ✅ Pass |
+| TC-CI-008 | Pipeline fails on assertion failure | A deliberate failing assertion is introduced | Push commit with broken assertion | Workflow run shows ❌; failed step and assertion message visible in logs | ⏳ Pending |
+| TC-CI-009 | Pipeline recovers after fix | TC-CI-008 has been executed | Revert the breaking change and push | Workflow run shows ✅; all steps green | ⏳ Pending |

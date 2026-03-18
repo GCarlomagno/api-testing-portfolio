@@ -19,7 +19,7 @@
               "\r",
               "pm.test(\"TC-API-008 - Response has status ok\", function () {\r",
               "    const json = pm.response.json();\r",
-              "    pm.expect(json.status).to.eql(\"this-will-fail\");\r",
+              "    pm.expect(json.status).to.eql(\"ok\");\r",
               "});"
             ],
             "type": "text/javascript",
