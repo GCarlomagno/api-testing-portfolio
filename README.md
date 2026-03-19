@@ -1,7 +1,7 @@
 # 🔌 API Testing Portfolio Project
 ![API Tests](https://github.com/GCarlomagno/api-testing-portfolio/actions/workflows/api-tests.yml/badge.svg)
 **Test Cycle Version:** 1.5
-**Test Execution Period:** 2026-03-08 – 2026-03-18
+**Test Execution Period:** 2026-03-08 – 2026-03-19
 **Tester:** GCarlomagno
 
 ---
@@ -158,6 +158,7 @@ In Postman 12.1.1, unsaved requests fail silently in the Collection Runner with 
 - `/reports/` — Newman HTML execution reports
 - `run-tests.ps1` — Reusable Newman run script for Windows
 - `run-tests.sh` — Reusable Newman run script for Linux/CI
+- `/.github/workflows/` — GitHub Actions pipeline files
 
 ---
 
